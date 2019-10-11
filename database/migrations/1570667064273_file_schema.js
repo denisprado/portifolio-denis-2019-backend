@@ -11,13 +11,7 @@ class FileSchema extends Schema {
       table.string("name").notNullable();
       table.string("type", 20);
       table.string("subtype", 20);
-      table
-        .integer("project_id")
-        .unsigned()
-        .references("id")
-        .inTable("projects")
-        .onUpdate("CASCADE")
-        .onDelete("CASCADE");
+
       table.timestamps();
     });
   }
