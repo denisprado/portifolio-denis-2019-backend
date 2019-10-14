@@ -17,6 +17,13 @@ class ProjectSchema extends Schema {
         .inTable("files")
         .onUpdate("CASCADE")
         .onDelete("SET NULL");
+      table
+        .integer("category_id")
+        .unsigned()
+        .references("id")
+        .inTable("categories")
+        .onUpdate("CASCADE")
+        .onDelete("SET NULL");
     });
   }
 

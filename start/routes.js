@@ -1,4 +1,4 @@
-'use strict'
+"use strict";
 
 /*
 |--------------------------------------------------------------------------
@@ -14,14 +14,15 @@
 */
 
 /** @type {typeof import('@adonisjs/framework/src/Route/Manager')} */
-const Route = use('Route')
+const Route = use("Route");
 
-Route.post('/sessions', 'SessionController.store').validator('Session')
-Route.post('/users', 'UserController.store').validator('User')
-Route.get('/users', 'UserController.index')
+Route.post("/sessions", "SessionController.store").validator("Session");
+Route.post("/users", "UserController.store").validator("User");
+Route.get("/users", "UserController.index");
+Route.resource("projects", "ProjectController").apiOnly();
+Route.resource("categories", "CategoryController").apiOnly();
 
+Route.get("/files/:id", "FileController.show");
 Route.group(() => {
-	Route.post('/projects/:id/files', 'FileController.store')
-	Route.get('/files/:id', 'FileController.show')
-  	Route.resource('projects', 'ProjectController').apiOnly()
-}).middleware(['auth'])
+  Route.post("/projects/:id/files", "FileController.store");
+}).middleware(["auth"]);

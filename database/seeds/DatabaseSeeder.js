@@ -13,14 +13,16 @@
 /** @type {import('@adonisjs/lucid/src/Factory')} */
 const User = use("App/Models/User");
 const Project = use("App/Models/Project");
+const Category = use("App/Models/Category");
 
 class DatabaseSeeder {
   async run() {
     const user = await User.create({
-      name: "Denis Forigo",
+      username: "Denis Forigo",
       email: "denisforigo@gmail.com",
       password: "123456"
     });
+    const category = await category.
     const project = await Project.create({
       title: "Projeto 1",
       description: "Teste"

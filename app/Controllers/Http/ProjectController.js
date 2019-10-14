@@ -1,5 +1,7 @@
 "use strict";
 
+const Project = use("App/Models/Project");
+
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
 /** @typedef {import('@adonisjs/framework/src/View')} View */
@@ -17,12 +19,11 @@ class ProjectController {
    * @param {Response} ctx.response
    * @param {View} ctx.view
    */
-  async index({ request }) {
-    const projects = await request.team
-      .projects()
+  async index({ request, params }) {
+    const projects = await Project.query()
+
       .with("files")
       .fetch();
-
     return projects;
   }
 
@@ -36,7 +37,7 @@ class ProjectController {
    */
   async store({ request }) {
     const data = request.only(["title", "description"]);
-    const project = request.team.projects().create(data);
+    const project = Project.create(data);
 
     return project;
   }
@@ -51,8 +52,7 @@ class ProjectController {
    * @param {View} ctx.view
    */
   async show({ params, request }) {
-    const project = await request.team
-      .projects()
+    const project = await Project.query()
       .where("id", params.id)
       .with("files")
       .first();
@@ -68,9 +68,13 @@ class ProjectController {
    * @param {Response} ctx.response
    */
   async update({ params, request }) {
-    const data = request.only(["title", "description"]);
-    const project = await request.team
-      .projects()
+    const data = request.only([
+      "title",
+      "description",
+      "file_id",
+      "category_id"
+    ]);
+    const project = await Project.query()
       .where("id", params.id)
       .first();
 
@@ -90,10 +94,7 @@ class ProjectController {
    * @param {Response} ctx.response
    */
   async destroy({ params, request }) {
-    const project = await request.team
-      .projects()
-      .where("id", params.id)
-      .first();
+    const project = await Project.where("id", params.id).first();
     await project.delete();
   }
 }
