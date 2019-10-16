@@ -1,6 +1,7 @@
 "use strict";
 
 const Project = use("App/Models/Project");
+const Category = use("App/Models/Category");
 
 /** @typedef {import('@adonisjs/framework/src/Request')} Request */
 /** @typedef {import('@adonisjs/framework/src/Response')} Response */
@@ -23,6 +24,7 @@ class ProjectController {
     const projects = await Project.query()
 
       .with("files")
+      .with("categories")
       .fetch();
     return projects;
   }
@@ -37,7 +39,14 @@ class ProjectController {
    */
   async store({ request }) {
     const data = request.only(["title", "description"]);
-    const project = Project.create(data);
+
+    const categoriesQuery = request.only(["category_id"]);
+
+    const categories = categoriesQuery.category_id;
+
+    const project = await Project.create(data);
+
+    await project.categories().attach(categories);
 
     return project;
   }
@@ -94,7 +103,9 @@ class ProjectController {
    * @param {Response} ctx.response
    */
   async destroy({ params, request }) {
-    const project = await Project.where("id", params.id).first();
+    const project = await Project.query()
+      .where("id", params.id)
+      .first();
     await project.delete();
   }
 }
