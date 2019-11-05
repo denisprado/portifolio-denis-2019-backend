@@ -25,7 +25,7 @@ class FileController {
       if (!request.file("file")) return console.log("Nenhum arquivo recebido");
 
       const upload = request.file("file", { size: "24mb" });
-      console.log(upload);
+
       await upload.moveAll(Helpers.tmpPath("uploads"), file => ({
         name: `${Date.now()}-${file.clientName}`
       }));
@@ -35,16 +35,21 @@ class FileController {
       }
 
       const files = await Promise.all(
-        upload.movedList().map(image =>
-          File.create({
+        upload.movedList().map(image => {
+          return File.create({
             file: image.fileName,
             name: image.clientName,
             type: image.type,
             subtype: image.subtype,
             project_id: parseInt(params.id)
-          })
-        )
+          });
+        })
       );
+
+      const project = await Project.find(params.id);
+      project.file_id = files[0].id;
+      await project.save();
+      //console.log(project);
 
       return files;
     } catch (err) {
